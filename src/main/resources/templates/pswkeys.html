@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <title>密码本列表</title>
+</head>
+<body onkeydown="keyLogin();">
+<!--头部导航栏-->
+<header th:replace="menu/header :: header"></header>
+<input type="text" name="keyword" id="keyword" placeholder="输入查询关键词"/>
+<input type="button" value="Search" id="search_cont"/>
+<hr/> 
+
+
+
+<table id="mydtable" class="table table-striped">
+    <thead>
+    <tr>
+        <td class="active">序号</td>
+        <td class="active">名称或备注</td>
+        <td class="success">类型</td>
+        <td class="warning">用户名</td>
+        <td class="danger">密码</td>
+        <td class="info">IP或地址</td>
+    </tr>
+    </thead>
+    <tbody id="mytbody">
+
+    <tr th:each="psw : ${pswkeys}">
+        <td th:text="${psw.id}">id</td>
+        <td th:text="${psw.remark}">remark</td>
+        <td th:switch="${psw.style}">
+            <p th:case="'0'">网站</p>
+            <p th:case="'1'">服务器</p>
+            <p th:case="'2'">数据库</p>
+            <p th:case="'3'">其他</p>
+        </td>
+        <td th:text="${psw.usrname}">usrname</td>
+        <td th:text="${psw.psw}">psw</td>
+        <td th:text="${psw.address}">address</td>
+    </tr>
+
+    </tbody>
+</table>
+
+<script type="text/javascript">
+
+    //回车提交查询
+    function keyLogin(){
+        if (event.keyCode==13)  //回车键的键值为13
+            $("#search_cont").click(); //调用查询按钮
+    }
+
+    /**
+     * 使用ajax发送查询请求
+     */
+    $("#search_cont").click(function () {
+        var cont = $("#keyword").val();//搜索关键字
+        console.log('cont',cont);
+        $.ajax({
+            type: "GET",
+            url: "/pswkey/search/" + cont,
+            //contentType: "application/json;charset=utf-8",
+            //data: JSON.stringify({"cont": cont}),
+            dataType: "json",
+            success: function(data) {
+                if (data != "") {
+                    var tbody = "";
+                    for(var i in data) {
+
+                        var style = "";
+                        if(data[i].style == 0)
+                            style = "网站";
+                        if(data[i].style == 1)
+                            style = "服务器";
+                        if(data[i].style == 2)
+                            style = "数据库";
+                        if(data[i].style == 3)
+                            style = "其他";
+
+                        var html = "<tr><td>" + data[i].id + "</td><td>" +
+                            data[i].remark + "</td><td>" +
+                            style + "</td><td>" +
+                            data[i].usrname + "</td><td>" +
+                            data[i].psw + "</td><<td>" +
+                            data[i].address + "</td>/tr>";
+                        tbody += html;
+                    }
+                    $("#mytbody").empty();//清除原html
+                    $("#mytbody").html(tbody);//写入查询结果
+
+                } else {
+                    alert("Search result is Null");
+                }
+
+            }
+        })
+    });
+</script>
+</body>
+</html>

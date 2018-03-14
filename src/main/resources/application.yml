@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:mysql://10.10.31.53:3306/pdsave?useUnicode=true&characterEncoding=UTF-8
+
+    username: root
+    password: q1w2e3
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+  thymeleaf:
+    cache: true
+    check-template-location: true
+    prefix: classpath:/templates/
+    suffix: .html
+    content-type: text/html
+    enabled: true
+    encoding: utf-8
+    mode: HTML5
+    excluded-view-names:
+    template-resolver-order:
+
+server:
+  port: 8080
+

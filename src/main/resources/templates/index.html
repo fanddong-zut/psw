@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+
+    <style>
+        .required {
+            color: red;
+            font-size: 100%;
+        }
+
+        .myButton1 {
+            background-color:#44c767;
+            -webkit-border-radius:28px;
+            border-radius:28px;
+            border:1px solid #18ab29;
+            display:inline-block;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:10px;
+            padding:5px 7px;
+            text-decoration:none;
+            text-shadow:0px 1px 0px #2f6627;
+        }
+
+        .myButton2 {
+            background-color:#EE9A00;
+            -webkit-border-radius:28px;
+            border-radius:28px;
+            border:1px solid #EE9A00;
+            display:inline-block;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:10px;
+            padding:5px 7px;
+            text-decoration:none;
+            text-shadow:0px 1px 0px #EE9A00;
+        }
+    </style>
+
+
+    <title>存储密码</title>
+</head>
+<body>
+<!--头部导航栏-->
+<header th:replace="menu/header :: header"></header>
+<hr/>
+
+<form action="#" id="pswform">
+    <p>
+        <span class="required">*</span>名称或备注：<input name="remark"/>
+        密码类别：<select name="style">
+        <option value="1">网站</option>
+        <option value="2">服务器</option>
+        <option value="3">数据库</option>
+        <option value="4">其他</option>
+    </select>
+    </p>
+
+    <p>
+        <span class="required">*</span>登录名：<input name="usrname"/>
+        <span class="required">*</span>登录密码：<input name="psw"/>
+        IP或网址：<input name="address"/>
+    </p>
+
+    <p>
+        <input type="reset" class="myButton2" value="清空表单">&nbsp;&nbsp;
+        <input type="button" class="myButton1" value="保存密码" id="mybutton">
+    </p>
+
+
+</form>
+
+<script type="text/javascript">
+
+    $("#mybutton").click(function () {
+        var remark = pswform.remark.value;
+        var usrname = pswform.usrname.value;
+        var psw = pswform.psw.value;
+        if(remark == "" || usrname == "" || psw == "") {
+            alert("您有未填写的必填项，请检查后再提交！")
+            return;
+        }
+
+
+        $.ajax({
+            type: "POST",   //提交的方法
+            url:"/pswkey/save", //提交的地址
+            data:$('#pswform').serialize(),// 序列化表单值
+            async: false,
+            error: function(request) {  //失败的话
+                alert("Connection error");
+            },
+            success: function(data) {  //成功
+                alert(data);  //就将返回的数据显示出来
+                //window.location.href="跳转页面"
+                $('#pswform')[0].reset();//清空表单数据
+            }
+        });
+    });
+
+</script>
+</body>
+</html>
